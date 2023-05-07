@@ -35,7 +35,7 @@ timeseries2 = TimeSeries(identifier='series_2', name='Series 2', data_type='NUMB
 # Add record(s)
 timeseries1.insert(TsRecord(**{ timestamp: datetime.now(), value: 30 }))
 
-// Output in JSON Time Series document format
+# Output in JSON Time Series document format
 jts_doc = JtsDocument([timeseries1, timeseries2])
 json_str = jts_doc.toJSON()
 ````
@@ -102,9 +102,9 @@ See full documentation.
 
 
 ```python
-// Create a JTS Document from one or more timeseries
+# Create a JTS Document from one or more timeseries
 jts_document = JtsDocument(series=[timeseries1, timeseries2])
-// Output series in JTS Document format
+# Output series in JTS Document format
 json_str = jts_document.toJSON()
 ```
 
