@@ -1,5 +1,5 @@
-# jts-python
-JSON Time Series (JTS) specification handling Python library
+# JSON-TimeSeries
+JSON Time Series (JTS specification) handling Python library
 
 # Time Series
 
@@ -14,12 +14,12 @@ pip install jts-py
 
 Import or require module
 ```python
-from jts_py import TsRecord, TimeSeries, JtsDocument
+from jts import TsRecord, TimeSeries, JtsDocument
 ```
 
 ## Usage
 ```python
-from jts_py import TsRecord, TimeSeries, JtsDocument
+from jts import TsRecord, TimeSeries, JtsDocument
 from datetime import datetime
 
 # Create Time Series

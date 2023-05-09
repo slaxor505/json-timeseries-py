@@ -10,7 +10,7 @@ Welcome to JSON Time Series (JTS) for Python's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   source/api/jts_py
+   source/api/jts
 
 Indices and tables
 ==================

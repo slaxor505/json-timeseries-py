@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timedelta
 from string import Template
 
-from jts_py import TsRecord, TimeSeries, JtsDocument
+from src.json_timeseries import TsRecord, TimeSeries, JtsDocument
 
 
 class TestTimeSeries(unittest.TestCase):
