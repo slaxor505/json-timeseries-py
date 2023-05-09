@@ -1,4 +1,4 @@
-# JSON-TimeSeries
+# JSON - time series
 JSON Time Series (JTS specification) handling Python library
 
 # Time Series
@@ -7,19 +7,19 @@ JSON Time Series (JTS specification) handling Python library
 
 ## Installation
 
-
 ```shell
 pip install jts-py
 ```
 
 Import or require module
 ```python
-from jts import TsRecord, TimeSeries, JtsDocument
+from json_timeseries import TsRecord, TimeSeries, JtsDocument
 ```
 
 ## Usage
+
 ```python
-from jts import TsRecord, TimeSeries, JtsDocument
+from json_timeseries import TsRecord, TimeSeries, JtsDocument
 from datetime import datetime
 
 # Create Time Series
@@ -44,7 +44,7 @@ json_str = jts_doc.toJSON()
 `TimeSeries` is a class for constructing and manipulating a single dataset.
 
 ```python
-from jts_py import TsRecord, TimeSeries
+from json_timeseries import TsRecord, TimeSeries
 from datetime import datetime
 
 time_series = TimeSeries(identifier='series_2', name='Series 2', data_type='NUMBER', units="m/s", 
@@ -71,7 +71,7 @@ time_series.units = 'm/s'
 `TsRecord` is a class for constructing and manipulating a single record.
 
 ```python
-from jts_py import TsRecord
+from json_timeseries import TsRecord
 from datetime import datetime
 
 ts_record1 = TsRecord(timestamp=datetime.now(), value=1.11, quality=0, annotation="example comment")
