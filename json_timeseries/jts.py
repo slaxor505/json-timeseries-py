@@ -11,7 +11,7 @@ TimeSeriesDataType = ('NUMBER', 'TEXT', 'TIME', 'COORDINATES')
 
 class TsRecord:
     """
-    Time Series's Record object
+    Record of TimeSeries object
     """
     def __init__(self, timestamp: datetime, value: Union[float, str, int], quality: int = None,
                  annotation: str = None):

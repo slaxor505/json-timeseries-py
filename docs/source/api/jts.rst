@@ -2,14 +2,14 @@
 JTS Python
 ==============
 
-.. currentmodule:: jts_py.jts_py
+.. currentmodule:: json_timeseries
 
 .. Don't include inherited members to keep the doc short
-.. autoclass:: jts_py.TsRecord
+.. autoclass:: json_timeseries.TsRecord
     :members:
 
-.. autoclass:: jts_py.TimeSeries
+.. autoclass:: json_timeseries.TimeSeries
     :members:
 
-.. autoclass:: jts_py.JtsDocument
+.. autoclass:: json_timeseries.JtsDocument
     :members:
