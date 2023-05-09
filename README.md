@@ -8,7 +8,7 @@ JSON Time Series (JTS specification) handling Python library
 ## Installation
 
 ```shell
-pip install jts-py
+pip install json-timeseries
 ```
 
 Import or require module
