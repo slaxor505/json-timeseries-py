@@ -1,9 +1,9 @@
 # JSON - time series
-JSON Time Series (JTS specification) handling Python library
 
-# Time Series
 
-> Time Series data construction, manipulation and serialisation.
+# JSON Time Series
+
+[JSON Time Series](https://docs.eagle.io/en/latest/reference/historic/jts.html) (JTS specification) handling Python library - Time Series data construction, manipulation and serialisation.
 
 ## Installation
 
