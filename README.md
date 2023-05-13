@@ -84,11 +84,11 @@ Records require a timestamp and at least one attribute: value, quality or annota
 
 ### Methods 
 
-See full documentation.
+See [full documentation](https://json-timeseries-py.readthedocs.io).
 
 ### Properties
 
-See full documentation.
+See [full documentation](https://json-timeseries-py.readthedocs.io).
 
 
 
@@ -111,11 +111,11 @@ json_str = jts_document.toJSON()
 
 ### Methods 
 
-See full documentation.
+See [full documentation](https://json-timeseries-py.readthedocs.io).
 
 ### Properties
 
-See full documentation.
+See [full documentation](https://json-timeseries-py.readthedocs.io).
 
 ## License
 MIT
