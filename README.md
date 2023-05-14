@@ -1,5 +1,8 @@
 # JSON Time Series
 
+[![Documentation Status](https://readthedocs.org/projects/json-timeseries-py/badge/?version=latest)](https://json-timeseries-py.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/json-timeseries.svg)](https://badge.fury.io/py/json-timeseries)
+
 [JSON Time Series](https://docs.eagle.io/en/latest/reference/historic/jts.html) (JTS specification) handling Python library - Time Series data construction, manipulation and serialisation.
 
 ## Installation
