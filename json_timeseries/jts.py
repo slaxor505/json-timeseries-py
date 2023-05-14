@@ -285,7 +285,3 @@ class JtsDocument:
 
 
         return next((x for x in self.series if x.identifier == identifier), None)
-
-# TODO check if I need extra methods then publish and rewrite OPB API using the library
-# TODO all type hints of public API
-# TODO DOCS - read.me from eagle rewrite and any necessary docs
