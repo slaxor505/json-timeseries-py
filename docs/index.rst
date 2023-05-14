@@ -5,16 +5,15 @@
 
 Welcome to JSON Time Series (JTS) for Python's documentation!
 =============================================================
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   source/readme.rst
    source/api/jts
+
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

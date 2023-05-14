@@ -1,5 +1,5 @@
 ==============
-JTS Python
+Library reference
 ==============
 
 .. currentmodule:: json_timeseries

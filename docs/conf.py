@@ -19,9 +19,9 @@ author = 'Slava Pisarevskiy'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'recommonmark',
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode'
+    'sphinx.ext.viewcode',
+    'sphinx_mdinclude',
 ]
 
 templates_path = ['_templates']
