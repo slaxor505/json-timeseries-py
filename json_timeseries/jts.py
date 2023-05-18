@@ -8,13 +8,24 @@ from dateutil import parser
 TimeSeriesDataType = ('NUMBER', 'TEXT', 'TIME', 'COORDINATES')
 
 
-
 class TsRecord:
     """
-    Record of TimeSeries object
+    A record of TimeSeries object
+
+    :param timestamp: Timestamp
+    :type timestamp: datetime
+    :param value: Value
+    :type value: Union[float, str, int]
+    :param quality: Quality
+    :type quality: int
+    :param annotation: Annotation
+    :type annotation: str
     """
+
     def __init__(self, timestamp: datetime, value: Union[float, str, int], quality: int = None,
                  annotation: str = None):
+
+        # TODO 1: enforce value types
         self.timestamp = timestamp
         self.value = value
         self.quality = quality
@@ -61,6 +72,9 @@ class TimeSeries:
     #     return self.__dict__ is other.__dict__
 
     def insert(self, records: Union[TsRecord, List[TsRecord]]):
+        """
+        Insert single or multiple records
+        """
 
         if isinstance(records, list):
             self.records.extend(records)
@@ -80,9 +94,10 @@ class TimeSeries:
 
     def toJSON(self) -> str:
         """
-        Outputs JSON string
+        Outputs formatted JSON
         """
         return json.dumps(self, default=__datetimeconverter)
+
 
 # TODO METHODS to implement
 #
@@ -97,6 +112,10 @@ class TimeSeries:
 #   private valueToJSON (value: Type | undefined): Type | undefined | string | null {
 #
 #   private cloneRecords (records: ITimeSeriesRecord<Type>[]): ITimeSeriesRecord<Type>[] {
+
+
+class JtsDocument:
+    pass
 
 
 class JtsDocument:
@@ -241,7 +260,11 @@ class JtsDocument:
         return column
 
     @staticmethod
-    def fromJSON(json_str):
+    def fromJSON(json_str: str) -> JtsDocument:
+        """
+        Create a new jtsDocument from JSON
+        """
+
         json_obj = json.loads(json_str)
 
         jts_doc = JtsDocument(version=json_obj.get('version'))
@@ -277,11 +300,7 @@ class JtsDocument:
     def getSeries(self, identifier: str) -> TimeSeries:
         """
         Get series by id
-        :param identifier: 
-        :type identifier: 
-        :return: 
-        :rtype: 
         """
 
-
+        # TODO: return list of found series
         return next((x for x in self.series if x.identifier == identifier), None)
