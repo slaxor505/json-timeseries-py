@@ -166,7 +166,7 @@ class TestJtsDocument(unittest.TestCase):
 
         jts_str = t.substitute(ONE_MINUTE_AGO=self.ONE_MINUTE_AGO.isoformat(),
                                NOW=self.NOW.isoformat())
-        jts_payload = jts_document.toJSON()
+        jts_payload = jts_document.toJSONString()
         self.assertEqual(jts_payload, json.dumps(json.loads(jts_str)))
 
     def test_fromJSON(self):

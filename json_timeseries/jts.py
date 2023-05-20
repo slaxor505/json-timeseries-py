@@ -24,7 +24,6 @@ class TsRecord:
 
     def __init__(self, timestamp: datetime, value: Union[float, str, int], quality: int = None,
                  annotation: str = None):
-
         # TODO 1: enforce value types
         self.timestamp = timestamp
         self.value = value
@@ -128,9 +127,6 @@ class JtsDocument:
     """
     TODO Methods to implement
 
-    // Output as stringified JSON
-    jtsDocument.toString()
-
     // Clone document (also clones series)
     jtsDocument.clone()
 
@@ -178,11 +174,22 @@ class JtsDocument:
     def __len__(self):
         return self.series.__len__()
 
-    def toJSON(self) -> str:
+    def toJSON(self) -> dict:
         """
-        Output as formatted JSON
+        Output as dictionary of JSON structure
+        :return: Python dictionary of JSON structure
+        :rtype: dict
         """
-        return json.dumps(self.__build())
+        # return json.dumps(self.__build())
+        return self.__build()
+
+    def toJSONString(self):
+        """
+        Output as stringified JSON (json.dumps)
+        :return: Output as stringified JSON
+        :rtype: str
+        """
+        return json.dumps(self.toJSON())
 
     def __build(self):
         doc = dict(docType='jts',
