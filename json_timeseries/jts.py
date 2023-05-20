@@ -177,6 +177,7 @@ class JtsDocument:
     def toJSON(self) -> dict:
         """
         Output as dictionary of JSON structure
+
         :return: Python dictionary of JSON structure
         :rtype: dict
         """
@@ -186,6 +187,7 @@ class JtsDocument:
     def toJSONString(self):
         """
         Output as stringified JSON (json.dumps)
+
         :return: Output as stringified JSON
         :rtype: str
         """
