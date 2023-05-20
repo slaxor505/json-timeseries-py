@@ -184,7 +184,7 @@ class JtsDocument:
         # return json.dumps(self.__build())
         return self.__build()
 
-    def toJSONString(self):
+    def toJSONString(self) -> str:
         """
         Output as stringified JSON (json.dumps)
 
