@@ -37,7 +37,7 @@ timeseries1.insert(TsRecord(**{ timestamp: datetime.now(), value: 30 }))
 
 # Output in JSON Time Series document format
 jts_doc = JtsDocument([timeseries1, timeseries2])
-json_str = jts_doc.toJSON()
+json_str = jts_doc.toJSONString()
 ````
 
 ## TimeSeries
@@ -105,7 +105,7 @@ See [full documentation](https://json-timeseries-py.readthedocs.io).
 # Create a JTS Document from one or more timeseries
 jts_document = JtsDocument(series=[timeseries1, timeseries2])
 # Output series in JTS Document format
-json_str = jts_document.toJSON()
+json_str = jts_document.toJSONString()
 ```
 
 ### Options
