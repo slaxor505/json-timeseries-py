@@ -64,6 +64,13 @@ class TestJtsDocument(unittest.TestCase):
             TsRecord(**{"timestamp": self.TWO_MILISECONDS_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.ONE_MILISECOND_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.NOW, "value": 2})]
+        
+        self.NUMBER_SUBSECOND_RECORDS_OUT_OF_ORDER = [
+            TsRecord(**{"timestamp": self.ONE_MILISECOND_AGO, "value": 2}),
+            TsRecord(**{"timestamp": self.NOW, "value": 2}),
+            TsRecord(**{"timestamp": self.TWO_MILISECONDS_AGO, "value": 2}),
+            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1, "quality": 192, "annotation": 'comment'}),
+            TsRecord(**{"timestamp": self.THREE_MILISECONDS_AGO, "value": 2})]
 
         '''
         Other sample dataTypes for tests:
@@ -299,6 +306,22 @@ class TestJtsDocument(unittest.TestCase):
         ts = jts_doc.getSeries(identifier="series_1")
         self.assertEqual(len(ts.records), 5)
         self.assertEqual(len(jts_doc.toJSON()['data']), 5)
+    
+    def test_sortingSubSecondRecords(self):
+        expected = JtsDocument()
+        expected.addSeries(TimeSeries(name="ts", identifier="series_1", records=self.NUMBER_SUBSECOND_RECORDS))
+        
+        jts_doc = JtsDocument()
+        jts_doc.addSeries(TimeSeries(name="ts", identifier="series_1", records=self.NUMBER_SUBSECOND_RECORDS_OUT_OF_ORDER))
+        
+        self.assertEqual(len(jts_doc), 1)
+        self.assertEqual(jts_doc.toJSON()['header']['startTime'], expected.toJSON()['header']['startTime'])
+        self.assertEqual(jts_doc.toJSON()['header']['endTime'], expected.toJSON()['header']['endTime'])
+        for i in range(5): 
+            self.assertEqual(jts_doc.toJSON()['data'][i]['ts'], expected.toJSON()['data'][i]['ts'])
+
+        self.assertEqual(jts_doc.toJSON(), expected.toJSON())
+        self.assertEqual(jts_doc.toJSONString(), expected.toJSONString())
 
         if __name__ == '__main__':
             unittest.main()
