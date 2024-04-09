@@ -234,7 +234,7 @@ class JtsDocument:
             for r in s.records:
                 if (r.value is None) and (r.annotation is None) and (r.quality is None):
                     continue
-                key = r.timestamp.strftime('%s')  # epoch as key for the entry
+                key = r.timestamp.timestamp()
 
                 if not record_map.get(key):
                     record_map[key] = {"ts": r.timestamp.isoformat(), "f": {}}
