@@ -111,7 +111,7 @@ class TimeSeries:
         """
         Outputs formatted JSON
         """
-        return json.dumps(self, cls=CustomDatetimeConverter)
+        return json.dumps(self)
 
 
 # TODO METHODS to implement
@@ -253,7 +253,8 @@ class JtsDocument:
                 key = r.timestamp.timestamp()
 
                 if not record_map.get(key):
-                    record_map[key] = {"ts": r.timestamp, "f": {}}
+                    # Dirty way to convert timestamp to string here, but it is to avoid datetime serialization upstream
+                    record_map[key] = {"ts": r.timestamp.isoformat(timespec='milliseconds'), "f": {}}
 
                 record_map[key]["f"][idx] = self.__getDataColumnFromRecord(r, s.data_type)  # dict of entry values
 

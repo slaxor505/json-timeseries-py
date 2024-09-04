@@ -1,3 +1,4 @@
 sphinx-mdinclude
+sphinx_rtd_theme
 build
 twine
