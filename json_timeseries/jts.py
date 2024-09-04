@@ -8,13 +8,25 @@ from dateutil import parser
 TimeSeriesDataType = ('NUMBER', 'TEXT', 'TIME', 'COORDINATES')
 
 
+class CustomDatetimeConverter(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat(timespec='milliseconds')
+
+        # if isinstance(obj, complex):
+        #     return [obj.real, obj.imag]
+
+        # Let the base class default method raise the TypeError
+        return super().default(obj)
+
+
 class TsRecord:
     """
     A record of TimeSeries object
 
     :param timestamp: Timestamp
     :type timestamp: datetime
-    :param value: Value
+    :param value: Value. For data type 'NUMBER', value must be int or float.
     :type value: Union[float, str, int]
     :param quality: Quality
     :type quality: int
@@ -22,7 +34,7 @@ class TsRecord:
     :type annotation: str
     """
 
-    def __init__(self, timestamp: datetime, value: Union[float, str, int], quality: int = None,
+    def __init__(self, timestamp: datetime, value: Union[float, str, int] = None, quality: int = None,
                  annotation: str = None):
         # TODO 1: enforce value types
         self.timestamp = timestamp
@@ -31,17 +43,13 @@ class TsRecord:
         self.annotation = annotation
 
 
-def __datetimeconverter(m):
-    if isinstance(m, datetime):
-        return m.isoformat()
-
-
 class TimeSeries:
     """
     TimeSeries object
 
     :param data_type: Type of time series. E.g.: 'NUMBER', 'TEXT', 'TIME', 'COORDINATES'
     :type data_type: str, optional
+    :default data_type: 'NUMBER'
     :param records: List of records
     :type records: list, optional
     :param name: Time series name
@@ -66,6 +74,14 @@ class TimeSeries:
             self.records = records
         else:
             raise TypeError("'records' value must be TsRecord or List[TsRecord]")
+
+        for r in self.records:
+
+            if (r.value is not None) and not (isinstance(r.value, (float, int))) and (self.data_type == 'NUMBER'):
+                raise TypeError(
+                    "TimeSeries with data type 'NUMBER' includes TSRecord with value '%s' which is %s. 'NUMBER' "
+                    "values must be int or float" % (r.value, type(r.value))
+                )
 
     # def __eq__(self, other):
     #     return self.__dict__ is other.__dict__
@@ -95,7 +111,7 @@ class TimeSeries:
         """
         Outputs formatted JSON
         """
-        return json.dumps(self, default=__datetimeconverter)
+        return json.dumps(self, cls=CustomDatetimeConverter)
 
 
 # TODO METHODS to implement
@@ -191,7 +207,7 @@ class JtsDocument:
         :return: Output as stringified JSON
         :rtype: str
         """
-        return json.dumps(self.toJSON())
+        return json.dumps(self.toJSON(), cls=CustomDatetimeConverter)
 
     def __build(self):
         doc = dict(docType='jts',
@@ -237,7 +253,7 @@ class JtsDocument:
                 key = r.timestamp.timestamp()
 
                 if not record_map.get(key):
-                    record_map[key] = {"ts": r.timestamp.isoformat(), "f": {}}
+                    record_map[key] = {"ts": r.timestamp, "f": {}}
 
                 record_map[key]["f"][idx] = self.__getDataColumnFromRecord(r, s.data_type)  # dict of entry values
 
@@ -250,9 +266,12 @@ class JtsDocument:
 
         column = {}
         v = r.value
-        if v:
+        if v is not None:
             if data_type == 'NUMBER':
-                column["v"] = float(v)
+                if isinstance(v, float) or isinstance(v, int):
+                    column["v"] = v
+                else:
+                    raise TypeError("Value of Data Type 'NUMBER' must be float or int")
             elif data_type == 'TEXT':
                 column["v"] = str(v)
 

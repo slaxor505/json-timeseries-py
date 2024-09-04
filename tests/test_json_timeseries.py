@@ -12,10 +12,13 @@ class TestTimeSeries(unittest.TestCase):
     def setUp(self):
         self.NOW = datetime.now()  # new Date(Math.round(new Date().getTime() / 1000) * 1000)
         self.ONE_MINUTE_AGO = self.NOW - timedelta(minutes=1)  # new Date(NOW.getTime() - (60 * 1000))
+        self.TWO_MINUTE_AGO = self.NOW - timedelta(minutes=2)
 
         self.NUMBER_RECORDS = [
             TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1, "quality": 192, "annotation": 'comment'}),
-            TsRecord(**{"timestamp": self.NOW, "value": 2})]
+            TsRecord(**{"timestamp": self.NOW, "value": 2}),
+            TsRecord(**{"timestamp": self.TWO_MINUTE_AGO, "value": 0})
+        ]
 
         self.TEST_UUID = '2bf5ddbb-c370-428f-9329-7379fc72488d'
 
@@ -25,46 +28,48 @@ class TestTimeSeries(unittest.TestCase):
     def test_insert_single_record(self):
         ts = TimeSeries(name='TEST1', identifier=self.TEST_UUID, units='C', records=self.NUMBER_RECORDS)
         ts.insert(TsRecord(datetime.now(), 55))
-        self.assertEqual(len(ts), 3)
+        self.assertEqual(4, len(ts))
         # print(ts)
         #
 
     def test_insert_list_record(self):
         ts = TimeSeries(name='TEST1', identifier=self.TEST_UUID, units='C', records=self.NUMBER_RECORDS)
         ts.insert([TsRecord(datetime.now(), 55), TsRecord(datetime.now(), 77)])
-        self.assertEqual(len(ts), 4)
+        self.assertEqual(5, len(ts))
 
-
+    # TODO N: test_to_JSON
     # def test_to_JSON(self):
-    #     ts = TimeSeries(name='TEST1', ts_id=self.TEST_UUID, units='C', records=self.NUMBER_RECORDS)
+    #     ts = TimeSeries(name='TEST1', identifier=self.TEST_UUID, units='C', records=self.NUMBER_RECORDS)
     #     ts_json = """{"id": "2bf5ddbb-c370-428f-9329-7379fc72488d", "name": "TEST1", "units": "C", "type": "NUMBER", "records": [{"timestamp": "%s", "value": 1, "quality": 192, "annotation": "comment"}, {"timestamp": "%s", "value": 2}]}""" % (
     #         self.ONE_MINUTE_AGO.isoformat(), self.NOW.isoformat())
     #     self.assertEqual(ts.toJSON(), ts_json)
 
-class TestJtsDocument(unittest.TestCase):
 
+class TestJtsDocument(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
         self.NOW = datetime.now()  # new Date(Math.round(new Date().getTime() / 1000) * 1000)
         self.ONE_MINUTE_AGO = self.NOW - timedelta(minutes=1)  # new Date(NOW.getTime() - (60 * 1000))
+        self.ONE_MINUTE_LATER = self.NOW + timedelta(minutes=1)  # new Date(NOW.getTime() - (60 * 1000))
         self.ONE_MILISECOND_AGO = self.NOW - timedelta(milliseconds=1)
         self.TWO_MILISECONDS_AGO = self.NOW - timedelta(milliseconds=2)
         self.THREE_MILISECONDS_AGO = self.NOW - timedelta(milliseconds=3)
 
         self.NUMBER_RECORDS = [
             TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1, "quality": 192, "annotation": 'comment'}),
-            TsRecord(**{"timestamp": self.NOW, "value": 2})]
+            TsRecord(**{"timestamp": self.NOW, "value": 2}),
+            TsRecord(**{"timestamp": self.TWO_MILISECONDS_AGO, "value": 0})]
 
         self.TEST_UUID = '2bf5ddbb-c370-428f-9329-7379fc72488d'
-        
+
         self.NUMBER_SUBSECOND_RECORDS = [
             TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1, "quality": 192, "annotation": 'comment'}),
             TsRecord(**{"timestamp": self.THREE_MILISECONDS_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.TWO_MILISECONDS_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.ONE_MILISECOND_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.NOW, "value": 2})]
-        
+
         self.NUMBER_SUBSECOND_RECORDS_OUT_OF_ORDER = [
             TsRecord(**{"timestamp": self.ONE_MILISECOND_AGO, "value": 2}),
             TsRecord(**{"timestamp": self.NOW, "value": 2}),
@@ -113,12 +118,13 @@ class TestJtsDocument(unittest.TestCase):
 
     def test_toJSON_NUMBER(self):
         timeseries1 = TimeSeries(identifier='series_1', name='Series 1', data_type='NUMBER', records=[
-            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": '1.23', "quality": 192, "annotation": 'comment'}),
-            TsRecord(**{"timestamp": self.NOW, "value": '2.34', "quality": 245, "annotation": 'comment number 2'})]
+            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1.23, "quality": 192, "annotation": 'comment'}),
+            TsRecord(**{"timestamp": self.NOW, "value": 2.34, "quality": 245, "annotation": 'comment number 2'})]
                                  )
         timeseries2 = TimeSeries(identifier='series_2', name='Series 2', data_type='NUMBER', units="C", records=[
-            TsRecord(**{"timestamp": self.NOW, "value": '1.11', "quality": 111, "annotation": 'comment ts2 111'}),
-            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": '2.22', "quality": 222, "annotation": 'comment ts2'})
+            TsRecord(**{"timestamp": self.NOW, "value": 1.11, "quality": 111, "annotation": 'comment ts2 111'}),
+            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 0, "quality": 222, "annotation": 'comment ts2'}),
+            TsRecord(**{"timestamp": self.ONE_MINUTE_LATER})
         ])
 
         jts_document = JtsDocument(series=[timeseries1, timeseries2])
@@ -155,7 +161,7 @@ class TestJtsDocument(unittest.TestCase):
                             "a": "comment"
                         },
                         "1": {
-                            "v": 2.22,
+                            "v": 0,
                             "q": 222,
                             "a": "comment ts2"
                         }
@@ -181,20 +187,20 @@ class TestJtsDocument(unittest.TestCase):
         }
         """)
 
-        jts_str = t.substitute(ONE_MINUTE_AGO=self.ONE_MINUTE_AGO.isoformat(),
-                               NOW=self.NOW.isoformat())
+        jts_str = t.substitute(ONE_MINUTE_AGO=self.ONE_MINUTE_AGO.isoformat(timespec='milliseconds'),
+                               NOW=self.NOW.isoformat(timespec='milliseconds'))
         jts_payload = jts_document.toJSONString()
         self.assertEqual(jts_payload, json.dumps(json.loads(jts_str)))
 
     def test_fromJSON(self):
         timeseries1 = TimeSeries(identifier='series_1', name='Series 1', data_type='NUMBER', records=[
-            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": '1.23', "quality": 192, "annotation": 'comment'}),
-            TsRecord(**{"timestamp": self.NOW, "value": '2.34', "quality": 245, "annotation": 'comment number 2'})]
+            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1.23, "quality": 192, "annotation": 'comment'}),
+            TsRecord(**{"timestamp": self.NOW, "value": 2.34, "quality": 245, "annotation": 'comment number 2'})]
                                  )
         timeseries2 = TimeSeries(identifier='series_2', name='Series 2', data_type='NUMBER', units="C", records=[
-            TsRecord(**{"timestamp": self.NOW, "value": '1.11', "quality": 111, "annotation": 'comment ts2 111'}),
+            TsRecord(**{"timestamp": self.NOW, "value": 1.11, "quality": 111, "annotation": 'comment ts2 111'}),
             TsRecord(
-                **{"timestamp": self.ONE_MINUTE_AGO, "value": '2.22', "quality": 222, "annotation": 'comment ts2 222'})]
+                **{"timestamp": self.ONE_MINUTE_AGO, "value": 2.22, "quality": 222, "annotation": 'comment ts2 222'})]
                                  )
 
         jts_document = JtsDocument(series=[timeseries1, timeseries2])
@@ -265,11 +271,12 @@ class TestJtsDocument(unittest.TestCase):
 
     def test_getSeriesByID(self):
         timeseries1 = TimeSeries(identifier='series_1', name='Series 1', data_type='NUMBER', records=[
-            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": '1.23', "quality": 192, "annotation": 'comment'}),
-            TsRecord(**{"timestamp": self.NOW, "value": '2.34', "quality": 245, "annotation": 'comment number 2'})]
+            TsRecord(**{"timestamp": self.ONE_MINUTE_AGO, "value": 1.23, "quality": 192, "annotation": 'comment'}),
+            TsRecord(**{"timestamp": self.NOW, "value": 2.34, "quality": 245, "annotation": 'comment number 2'})]
                                  )
         timeseries2 = TimeSeries(identifier='series_2', name='Series 2', data_type='NUMBER', units="C",
-                                 records=TsRecord(timestamp=self.NOW, value=1.11, quality=111, annotation='comment ts2 111')
+                                 records=TsRecord(timestamp=self.NOW, value=1.11, quality=111,
+                                                  annotation='comment ts2 111')
                                  )
         jts_doc = JtsDocument([timeseries1, timeseries2])
 
@@ -306,18 +313,19 @@ class TestJtsDocument(unittest.TestCase):
         ts = jts_doc.getSeries(identifier="series_1")
         self.assertEqual(len(ts.records), 5)
         self.assertEqual(len(jts_doc.toJSON()['data']), 5)
-    
+
     def test_sortingSubSecondRecords(self):
         expected = JtsDocument()
         expected.addSeries(TimeSeries(name="ts", identifier="series_1", records=self.NUMBER_SUBSECOND_RECORDS))
-        
+
         jts_doc = JtsDocument()
-        jts_doc.addSeries(TimeSeries(name="ts", identifier="series_1", records=self.NUMBER_SUBSECOND_RECORDS_OUT_OF_ORDER))
-        
+        jts_doc.addSeries(
+            TimeSeries(name="ts", identifier="series_1", records=self.NUMBER_SUBSECOND_RECORDS_OUT_OF_ORDER))
+
         self.assertEqual(len(jts_doc), 1)
         self.assertEqual(jts_doc.toJSON()['header']['startTime'], expected.toJSON()['header']['startTime'])
         self.assertEqual(jts_doc.toJSON()['header']['endTime'], expected.toJSON()['header']['endTime'])
-        for i in range(5): 
+        for i in range(5):
             self.assertEqual(jts_doc.toJSON()['data'][i]['ts'], expected.toJSON()['data'][i]['ts'])
 
         self.assertEqual(jts_doc.toJSON(), expected.toJSON())
@@ -325,3 +333,11 @@ class TestJtsDocument(unittest.TestCase):
 
         if __name__ == '__main__':
             unittest.main()
+
+    def test_TimeSeries_with_str_value(self):
+        # test if TimeSeries raises TypeError when value is not float or int
+
+        with self.assertRaises(TypeError):
+            timeseries1 = TimeSeries(identifier='series_1', name='Series 1', data_type='NUMBER', records=[
+                TsRecord(**{"timestamp": self.NOW, "value": '2.34'})]
+                                     )
